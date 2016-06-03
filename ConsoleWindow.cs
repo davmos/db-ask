@@ -5,78 +5,39 @@
     using System.Runtime.InteropServices;
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct ConsoleFont
+    internal struct ConsoleFont
     {
-        public uint Index;
-        public short SizeX, SizeY;
+        internal uint Index;
+        internal short SizeX, SizeY;
     }
 
-    class ConsoleWindow
+    internal class ConsoleWindow
     {
-        [DllImport("kernel32.dll")]
-        static extern bool SetConsoleMode(IntPtr hConsoleHandle, int mode);
-
-        [DllImport("kernel32.dll")]
-        static extern bool GetConsoleMode(IntPtr hConsoleHandle, out int mode);
-
-        [DllImport("kernel32.dll")]
-        static extern IntPtr GetStdHandle(int handle);
-
-        const int STD_INPUT_HANDLE = -10;
-        const int ENABLE_QUICK_EDIT_MODE = 0x40 | 0x80;
+        private const int StdInputHandle = -10;
+        private const int QuickEditMode = 0x40 | 0x80;
 
         internal static void EnableQuickEditMode()
         {
             int mode;
-            IntPtr handle = GetStdHandle(STD_INPUT_HANDLE);
+            IntPtr handle = GetStdHandle(StdInputHandle);
             GetConsoleMode(handle, out mode);
-            mode |= ENABLE_QUICK_EDIT_MODE;
+            mode |= QuickEditMode;
             SetConsoleMode(handle, mode);
         }
 
-        [DllImport("kernel32")]
-        public static extern bool SetConsoleIcon(IntPtr hIcon);
-
-        public static bool SetConsoleIcon(Icon icon)
+        internal static bool SetConsoleIcon(Icon icon)
         {
             return SetConsoleIcon(icon.Handle);
         }
 
-        [DllImport("kernel32")]
-        private extern static bool SetConsoleFont(IntPtr hOutput, uint index);
-
-        private enum StdHandle
-        {
-            OutputHandle = -11
-        }
-
-        [DllImport("kernel32")]
-        private static extern IntPtr GetStdHandle(StdHandle index);
-
-        public static bool SetConsoleFont(uint index)
+        internal static bool SetConsoleFont(uint index)
         {
             return SetConsoleFont(GetStdHandle(StdHandle.OutputHandle), index);
         }
 
-        [DllImport("kernel32")]
-        private static extern bool GetConsoleFontInfo(
-            IntPtr hOutput, 
-            [MarshalAs(UnmanagedType.Bool)]bool bMaximize,
-            uint count, 
-            [MarshalAs(UnmanagedType.LPArray), Out] ConsoleFont[] fonts);
+        internal static uint ConsoleFontsCount => GetNumberOfConsoleFonts();
 
-        [DllImport("kernel32")]
-        private static extern uint GetNumberOfConsoleFonts();
-
-        public static uint ConsoleFontsCount
-        {
-            get
-            {
-                return GetNumberOfConsoleFonts();
-            }
-        }
-
-        public static ConsoleFont[] ConsoleFonts
+        internal static ConsoleFont[] ConsoleFonts
         {
             get
             {
@@ -85,9 +46,9 @@
                 if (fonts.Length > 0)
                 {
                     GetConsoleFontInfo(
-                        GetStdHandle(StdHandle.OutputHandle), 
-                        false, 
-                        (uint)fonts.Length, 
+                        GetStdHandle(StdHandle.OutputHandle),
+                        false,
+                        (uint)fonts.Length,
                         fonts);
                 }
 
@@ -120,5 +81,38 @@
                 Console.SetBufferSize(Console.WindowWidth, 3000);
             }
         }
+
+        [DllImport("kernel32.dll")]
+        private static extern bool SetConsoleMode(IntPtr hConsoleHandle, int mode);
+
+        [DllImport("kernel32.dll")]
+        private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out int mode);
+
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GetStdHandle(int handle);
+
+        [DllImport("kernel32")]
+        private static extern bool SetConsoleIcon(IntPtr hIcon);
+
+        [DllImport("kernel32")]
+        private static extern bool SetConsoleFont(IntPtr hOutput, uint index);
+
+        private enum StdHandle
+        {
+            OutputHandle = -11
+        }
+
+        [DllImport("kernel32")]
+        private static extern IntPtr GetStdHandle(StdHandle index);
+
+        [DllImport("kernel32")]
+        private static extern bool GetConsoleFontInfo(
+            IntPtr hOutput, 
+            [MarshalAs(UnmanagedType.Bool)]bool bMaximize,
+            uint count, 
+            [MarshalAs(UnmanagedType.LPArray), Out] ConsoleFont[] fonts);
+
+        [DllImport("kernel32")]
+        private static extern uint GetNumberOfConsoleFonts();
     }
 }

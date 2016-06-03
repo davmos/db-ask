@@ -2,9 +2,9 @@
 {
     using System.Configuration;
 
-    public class Search
+    internal class Search
     {
-        public Search(string arg)
+        internal Search(string arg)
         {
             if (arg == null)
             {
@@ -22,36 +22,32 @@
                 return;
             }
 
-            if (parts.Length == 3)
+            switch (parts.Length)
             {
-                this.Host = ConfigurationManager.AppSettings["DefaultHost"];
-                this.Catalog = parts[0];
-                this.Schema = parts[1];
-                this.Table = parts[2];
-                return;
-            }
-
-            if (parts.Length == 2)
-            {
-                this.Host = ConfigurationManager.AppSettings["DefaultHost"];
-                this.Catalog = ConfigurationManager.AppSettings["DefaultCatalog"];
-                this.Schema = parts[0];
-                this.Table = parts[1];
-                return;
-            }
-
-            if (parts.Length == 1)
-            {
-                this.Host = ConfigurationManager.AppSettings["DefaultHost"];
-                this.Catalog = ConfigurationManager.AppSettings["DefaultCatalog"];
-                this.Schema = ConfigurationManager.AppSettings["DefaultSchema"];
-                this.Table = parts[0];
+                case 3:
+                    this.Host = ConfigurationManager.AppSettings["DefaultHost"];
+                    this.Catalog = parts[0];
+                    this.Schema = parts[1];
+                    this.Table = parts[2];
+                    return;
+                case 2:
+                    this.Host = ConfigurationManager.AppSettings["DefaultHost"];
+                    this.Catalog = ConfigurationManager.AppSettings["DefaultCatalog"];
+                    this.Schema = parts[0];
+                    this.Table = parts[1];
+                    return;
+                case 1:
+                    this.Host = ConfigurationManager.AppSettings["DefaultHost"];
+                    this.Catalog = ConfigurationManager.AppSettings["DefaultCatalog"];
+                    this.Schema = ConfigurationManager.AppSettings["DefaultSchema"];
+                    this.Table = parts[0];
+                    break;
             }
         }
 
-        public string Host { get; set; }
-        public string Catalog { get; set; }
-        public string Schema { get; set; }
-        public string Table { get; set; }
+        internal string Host { get; set; }
+        internal string Catalog { get; set; }
+        internal string Schema { get; set; }
+        internal string Table { get; set; }
     }
 }

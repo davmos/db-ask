@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Data;
     using System.Data.SqlClient;
 
     internal class DataAccess
@@ -74,7 +75,7 @@
 
             if (!string.IsNullOrWhiteSpace(characterMaxLength))
             {
-                return string.Format("{0}({1})", dataType, characterMaxLength);
+                return $"{dataType}({characterMaxLength})";
             }
 
             string numericPrecision = reader["numeric_precision"].ToString();
@@ -82,11 +83,7 @@
 
             if (!string.IsNullOrWhiteSpace(numericPrecision))
             {
-                return string.Format(
-                    "{0}({1}, {2})", 
-                    dataType, 
-                    numericPrecision,
-                    numericPrecisionRadix);
+                return $"{dataType}({numericPrecision}, {numericPrecisionRadix})";
             }
 
             return dataType;
@@ -129,7 +126,7 @@
             return Formatter.PadElementsInLines(lines);
         }
 
-        private static string FormatIsNullable(SqlDataReader reader)
+        private static string FormatIsNullable(IDataRecord reader)
         {
             return reader["is_nullable"].ToString().Equals("NO", StringComparison.OrdinalIgnoreCase)
                 ? "NOT NULL"
@@ -200,10 +197,7 @@
         private static SqlConnection NewSqlConnection(Search search)
         {
             var connection = new SqlConnection(
-                string.Format(
-                    @"data source={0};initial catalog={1};integrated Security=SSPI",
-                    search.Host,
-                    search.Catalog));
+                $@"data source={search.Host};initial catalog={search.Catalog};integrated Security=SSPI");
 
             connection.Open();
 

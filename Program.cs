@@ -2,9 +2,9 @@
 {
     using static System.Console;
 
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             SetWindow();
 
@@ -52,24 +52,24 @@
         private static string SearchColumns(string arg)
         {
             var search = new Search(arg);
-            WriteLine("Server={0} Catalog={1} Schema={2}", search.Host, search.Catalog, search.Schema);
-            WriteLine("Searching for columns with name containing '{0}'...\n", search.Table);
+            WriteLine($"Server={search.Host} Catalog={search.Catalog} Schema={search.Schema}");
+            WriteLine($"Searching for columns with name containing '{search.Table}'...\n");
             return DataAccess.SearchColumns(arg);
         }
 
         private static string SearchTables(string arg)
         {
             var search = new Search(arg);
-            WriteLine("Server={0} Catalog={1} Schema={2}", search.Host, search.Catalog, search.Schema);
-            WriteLine("Searching for tables with name containing '{0}'...\n", search.Table);
+            WriteLine($"Server={search.Host} Catalog={search.Catalog} Schema={search.Schema}");
+            WriteLine($"Searching for tables with name containing '{search.Table}'...\n");
             return DataAccess.SearchTables(arg);
         }
 
         private static string DescribeTable(string arg)
         {
             var search = new Search(arg);
-            WriteLine("Server={0} Catalog={1} Schema={2}", search.Host, search.Catalog, search.Schema);
-            WriteLine("Getting table definition of '{0}'...\n", search.Table);
+            WriteLine($"Server={search.Host} Catalog={search.Catalog} Schema={search.Schema}");
+            WriteLine($"Getting table definition of '{search.Table}'...\n");
             return DataAccess.DescribeTable(arg);
         }
     }
