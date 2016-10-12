@@ -51,7 +51,7 @@
 
         private static string SearchColumns(string arg)
         {
-            var search = new Search(arg);
+            var search = new Search(arg, Search.Type.ColumnSearch);
             WriteLine($"Server={search.Host} Catalog={search.Catalog} Schema={search.Schema}");
             WriteLine($"Searching for columns with name containing '{search.Table}'...\n");
             return DataAccess.SearchColumns(arg);
@@ -59,7 +59,7 @@
 
         private static string SearchTables(string arg)
         {
-            var search = new Search(arg);
+            var search = new Search(arg, Search.Type.TableSearch);
             WriteLine($"Server={search.Host} Catalog={search.Catalog} Schema={search.Schema}");
             WriteLine($"Searching for tables with name containing '{search.Table}'...\n");
             return DataAccess.SearchTables(arg);
@@ -67,7 +67,7 @@
 
         private static string DescribeTable(string arg)
         {
-            var search = new Search(arg);
+            var search = new Search(arg, Search.Type.TableDescription);
             WriteLine($"Server={search.Host} Catalog={search.Catalog} Schema={search.Schema}");
             WriteLine($"Getting table definition of '{search.Table}'...\n");
             return DataAccess.DescribeTable(arg);
